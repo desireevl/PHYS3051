@@ -4,4 +4,18 @@
 H.~Reich, ``How quantum computers break encryption | shor's algorithm
   explained.'' {\url{https://www.youtube.com/watch?v=lvTqbM5Dq4Q}}, 2019.
 
+\bibitem{blochsphere}
+S.~Meister, ``Bloch sphere.''
+  {\url{https://en.wikipedia.org/wiki/File:Bloch_sphere.svg}}, 2009.
+
+\bibitem{qiskitt}
+IBM, ``Introducing qubit phase.''
+  {\url{https://quantumexperience.ng.bluemix.net/proxy/tutorial/full-user-guide/002-The_Weird_and_Wonderful_World_of_the_Qubit/003-Introducing_qubit_phase.html}},
+  nd.
+
+\bibitem{qiskitu}
+IBM, ``Advanced single-qubit gates.''
+  {\url{https://quantumexperience.ng.bluemix.net/proxy/tutorial/full-user-guide/002-The_Weird_and_Wonderful_World_of_the_Qubit/004-advanced_qubit_gates.html}},
+  nd.
+
 \end{thebibliography}
