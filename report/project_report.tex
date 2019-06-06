@@ -5,13 +5,16 @@
 \renewcommand{\baselinestretch}{1.4}
 
 \usepackage{graphicx}
+\usepackage{url}
+\usepackage{enumitem}
 
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
-    linkcolor=blue,
+    linkcolor=red,
     filecolor=blue,      
     urlcolor=blue,
+    citecolor=red
 }
  
 \usepackage[
@@ -31,7 +34,7 @@
 
 \title{Implementing the Klein Gordon Equation on a Quantum Computer}
 \author{Desiree Vogt-Lee}
-\date{June 2019}
+\date{10 June, 2019}
 
 \begin{document}
 	\maketitle
@@ -46,13 +49,32 @@ motivation
 
 \section{Background}
 \subsection{Quantum Computing}
-\subsection{Gates}
+Quantum computing is the melding together of quantum mechanics and classical computation. The computer chips used in quantum computers use the same fundamental components as that of their classical counterparts, however are pieced together in a way which allow quantum-bits, or qubits, to be used instead of bits. 
 
-\href{https://desireevl.github.io/archive/2019/04/03/quantum-intro.html}{blog}
+A fundamental flaw in the current design of quantum computers is the large amount of error that is created due to noise and decoherence, which increases with the number of qubits used. This severely limits the computation that can be performed with a negligable amount of error, as at some point, the current error correcting codes will have little effect. 
+
+Many believe that quantum computation is the future. Due to the superposition and entanglement properties these qubits can possess, all sorts of optimisation and new algorithms can be created, which would have significant impact on many fields of technology. For example, modern cryptography is centered around the assumption that creating incredibly long numbers take current computers an impossibly long time to factorise. Using Shor's algorithm, a quantum computer would be able to factorise a number in polynomial time, exponentially faster than the best classical algorithm, and thus being able to break modern cryptography. \cite{minutephysics}
+
+At present, this is all merely a premonition; as although there exists many quantum algorithms, the error is too great and the number of qubits too little to be able to use them.
+
+\subsection{Gates}
+To modify the state that a qubit is in, a gate or procession of gates can be applied to it. The quantum gates are similar to the logic gates present in classical computing, but work with the quantum nature of the qubit. For example, the classical NOT gate simply flips the bit state: a 1 will be transformed to a 0. In quantum computing there is an equivalent X gate which when applied to a qubit in the $|0\rangle$ state, performs a rotation about the x axis on a Bloch sphere by $\pi$ radians resulting in the $|1\rangle$ state when measured (for more detailed explanation on the fundamental gates and terminology, please see my \href{https://desireevl.github.io/archive/2019/04/03/quantum-intro.html}{blog post}).
+
+Here I will briefly explain the gates that will be used to create the circuit that implements the Klein Gordon equation (minus those explained in my blog post):
+
+\begin{itemize}[labelindent=1.5em,labelsep=0.9cm,leftmargin=*]
+	\item $U_1$:
+	\item $U_3$:
+	\item T:
+	\item $T^\dagger$:
+	\item Measurement: 
+\end{itemize}
 
 
 \section{The Circuits}
 The barriers that are seem in the image of the circuit serve the purpose of
+
+In the code there is an option to choose to run the circuit on a real IBM quantum computer or the simulator.
 \subsection{Quantum Fourier Transform and its Inverse}
 
 
@@ -61,12 +83,9 @@ The barriers that are seem in the image of the circuit serve the purpose of
 
 \subsection{My Results}
 
-\section{References}
-[1] Wolfram Alpha (2019). \textit{Wolfram Alpha Search}. Retrieved from
-\begin{verbatim}
-http
-\end{verbatim}
 
+\bibliography{refs.bib}
+\bibliographystyle{ieeetr}
 
 
 
