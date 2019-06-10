@@ -45,18 +45,34 @@
 
 
 \section{The Klein Gordon Equation}
+The Klein Gordon equation set out to unify quantum mechanics and special relativity and ultimately led to the creation of the Dirac equation from which quantum field theory was born.
 
-motivation 
+The Klein Gordon (KG) equation is unable to describe a particle as the Schrodinger equation does due to there being no conserved probability. 
 
-\section{Background}
-\subsection{Quantum Computing}
+\begin{equation}
+\frac{1}{c^2}\frac{\partial^2}{\partial t^2}\psi - \nabla^2 \psi + \frac{m^2c^2}{\hbar^2}\psi = 0
+\end{equation}
+
+The Schrodinger equation is a first order equation in the time derivative where its' wavefunction is able to predict its future evolution. The Klein Gordon equation on the other hand is second order in the time derivative and the boundary condition for the field must be given to work out the field evolution. The KG equation also allows energy to be a negative value which can't be eliminated by limiting to only positive initial conditions due to run off effects that result in particles with E $< 0$. The Dirac equation was Dirac's attempt to create an equation that had a first order time derivative and was relativistic \cite{uqnotes}.
+
+
+
+The Klein paradox arises from using the Dirac equation to solve the problem of electron scattering from a barrier potential. Under non-relativistic circumstances, the electron would tunnel into the barrier. However if the barrier potential is greater than $mc^2$, the particle is able to penetrate the barrier as if it were transparent \cite{klein}.
+
+
+
+This report will be based off a paper titled \textit{Quantum Simulation of Klein Gordon Equation and Ob-servation of Klein Paradox in IBM Quantum Computer} by Manik, K et al. (2018) \cite{manik} which aimed to simulate the time dependent Klein Gordon equation in a barrier potential on a quantum computer to see the tunneling of both the particle and anti-particle with the Klein Paradox.
+
+The present report aims to replicate results, justify decisions made in the original publication and offer criticism and suggestions. 
+
+\section{Quantum Computing}
 Quantum computing is the melding together of quantum mechanics and classical computation. The computer chips used in quantum computers use the same fundamental components as that of their classical counterparts, however are pieced together in a way which allow quantum-bits, or qubits, to be used instead of bits. 
 
 A fundamental flaw in the current design of quantum computers is the large amount of error that is created due to noise and decoherence, which increases with the number of qubits used. This severely limits the computation that can be performed with a negligable amount of error, as at some point, the current error correcting codes will have little effect. 
 
 Many believe that quantum computation is the future. Due to the superposition and entanglement properties these qubits can possess, all sorts of optimisation and new algorithms can be created, which would have significant impact on many fields of technology. For example, modern cryptography is centered around the assumption that creating incredibly long numbers take current computers an impossibly long time to factorise. Using Shor's algorithm, a quantum computer would be able to factorise a number in polynomial time, exponentially faster than the best classical algorithm, and thus being able to break modern cryptography. \cite{minutephysics}
 
-At present, this is all merely a premonition; as although there exists many quantum algorithms, the error is too great and the number of qubits too little to be able to use them.
+At present, this is all merely a premonition; as although there exists many quantum algorithms, the error is too great and the number of qubits too little to be able to use them. I believe that applying the Klein Gordon equation on a quantum computer is useful in showing the present capabilities of this new technology as well as just being a really interesting application.
 
 \subsection{Gates}
 To modify the state that a qubit is in, a gate or procession of gates can be applied to it. The quantum gates are similar to the logic gates present in classical computing, but work with the quantum nature of the qubit. To easily conceptualise the effect of a quantum gate, a geometric representation called the Bloch sphere is used, where the poles of the sphere represent the standard basis vectors $|0\rangle$ and $|1\rangle$.
@@ -80,19 +96,38 @@ Here I will briefly explain the gates that will be used to create the circuit th
 	\[U_1(\lambda) = \left(\begin{array}{ll}{1} & {0} \\ {0} & {e^{i \lambda}}\end{array}\right)\]
 	\item\adjustbox{valign=t}{\includegraphics[width=0.7cm]{../images/u3_gate}}  {} {} {} {} $U_3$: used to perform arbitrary unitary operation, where the $\theta$, $\psi$ and $\lambda$ position of the vector on the Bloch sphere can be modified to any value. This is the most general form of a single qubit unitary operation and is represented in matrix form as \cite{qiskitu}:
 	\[U=\left(\begin{array}{cc}{\cos (\theta / 2)} & {-e^{i \lambda} \sin (\theta / 2)} \\ {e^{i \phi} \sin (\theta / 2)} & {e^{i \lambda+i \phi} \cos (\theta / 2)}\end{array}\right)\]
+	\item R
+	\[R = \left(\begin{array}{cc}{1} & {0} \\ {0} & {e^{2 \pi i / 2^{k}}}\end{array}\right)\]
+	\item\adjustbox{valign=t}{\includegraphics[width=0.7cm]{../images/swap}} {} {} {} {}  SWAP: operates on a pair of qubits and swaps their state.
     \item\adjustbox{valign=t}{\includegraphics[width=0.7cm]{../images/measurement_gate}} {} {} {} {} Measurement: used at the end of the circuit to measure the outcome of the states in the z basis.
-    \item\adjustbox{valign=t}{\includegraphics[width=0.25cm]{../images/barrier}} {} {} {} {} Barrier: directives which inform the complier not to optimise across barriers. They serve the purpose of keeping gates, especially measurement gates, in their place and are as well used as a visualisation tool to separate parts of the circuit.
+    \item\adjustbox{valign=t}{\includegraphics[width=0.7cm]{../images/barrier}} {} {} {} {} Barrier: directives which inform the complier not to optimise across barriers. They serve the purpose of keeping gates, especially measurement gates, in their place and are as well used as a visualisation tool to separate parts of the circuit.
 \end{itemize}
 
 
 \section{The Circuits}
+\subsection{Klein Gordon Equation as Unitary Operators}
+To implement the KG equation on a quantum computer, it must be written in terms of unitary operators. To do this we start with the equation for a Hamiltonian in terms of mass of a particle (m), momentum operator ($\hat{p}$), potential (V), speed of light (c), identity matrix (I) and Pauli matrices ($\sigma_{1,2,3}$):
+
+\begin{equation}
+\hat{H}=\frac{\sigma_{3}+i \sigma_{2}}{2 m} \hat{p}^{2}+\sigma_{3} m c^{2}+I \hat{V}
+\end{equation}
+
+\noindent By using the vector: 
+\[\varphi=\left[\begin{array}{l}{\phi} \\ {\chi}\end{array}\right]\]
+
+\noindent We can solve two simulataneous equations, resulting in:
+\[\hat{H}_{1} \phi=\frac{\hat{p}^2}{2m}(\phi+\chi)+(mc^2+\hat{V}) \phi\]
+\[\hat{H}_{2} \chi=-\frac{\hat{p}^2}{2m}(\phi+\chi)+(-mc^2+\hat{V}) \chi\]
+
+\noindent These equations then need to be represented as a time evolution equation which can be done by taking the second order Trotter-Suzuki decomposition of the Hamiltonian:
+\[|\psi(x, t+\delta)\rangle= e^{-i \hat{H}_{i} t}|\psi(x, t)\rangle\]
 
 In the code there is an option to choose to run the circuit on a real IBM quantum computer or the simulator.
 
 \begin{figure}[!htb]
 \includegraphics[scale=0.42]{../images/circuit1_colour}
   \centering
-  \caption{Circuit 1}
+  \caption{Circuit 1 }
 \end{figure}
 
 \begin{figure}[!htb]
@@ -100,8 +135,57 @@ In the code there is an option to choose to run the circuit on a real IBM quantu
   \centering
   \caption{Circuit 2}
 \end{figure}
-\subsection{Quantum Fourier Transform and its Inverse}
 
+\subsection{Fast Fourier Transform}
+The Fourier transform is able to decompose a function into its constituent functions, which has many practical applications including signal processing, analysis of differential equations and spectroscopy \cite{fourier}. One particular variation of Fourier transform of interest is the discrete Fourier transform (DFT) as it is computed using the fast Fourier transform (FFT) algorithm. The DFT computes a finite sequence of points of a function to its various frequency components, which although useful, is computationally expensive. The Cooley-Tucky \cite{turkey} FFT algorithm accelerates this process by splitting up the DFT problem into smaller parts and recognising a symmetry that exists between each even term and each odd term:
+
+\begin{equation}
+y_{k}=\sum_{n=0}^{N-1} x_{n} \cdot e^{-i 2 \pi k n / N}
+\end{equation}
+
+\[=\sum_{m=0}^{N / 2-1} x_{2 m} \cdot e^{-i 2 \pi k(2 m) / N}+\sum_{m=0}^{N / 2-1} x_{2 m+1} \cdot e^{-i 2 \pi k(2 m+1) / N}\]
+\[=\sum_{m=0}^{N / 2-1} x_{2 m} \cdot e^{-i 2 \pi k m /(N / 2)}+e^{-i 2 \pi k / N} \sum_{m=0}^{N / 2-1} x_{2 m+1} \cdot e^{-i 2 \pi k m /(N / 2)}\]
+
+\noindent Therefore instead of having to recompute the entirety of each term, only half of the subproblem needs to be computed. This method of dividing and computing half can be applied recursively until the vectors are small enough that the method no longer yields better results, at which point the computational complexity is $O(n\log{}n)$ (compared to the $O(n^2)$ of regular DFT) \cite{jvdp}.
+
+\subsection{Quantum Fourier Transform}
+The quantum Fourier transform is very similar to the FFT mentioned above. The quantum version acts on amplitudes of a quantum state and maps them to new amplitudes. The mathematical representation of the QFT is:
+
+\begin{equation}
+\alpha_{j}|j\rangle \rightarrow \alpha_{j}\left(\frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} e^{2 \pi i \frac{k j}{N}}|k\rangle\right)
+\end{equation}
+
+As in with standard DFT, a delta function will be transformed to a sine function using a QFT. For a two qubit system, with one qubit in the $|1\rangle$ state and the other in the $|0\rangle$ state, $|10\rangle$ will transform into the following superposition: 
+
+\begin{figure}[!htb]
+\includegraphics[scale=0.4]{../images/fourier}
+  \centering
+  \caption{Delta function transformed to a sine function of two qubits: $|10\rangle \rightarrow |00\rangle-|01\rangle+|10\rangle-|11\rangle$ \cite{jonathan}}
+\end{figure}
+
+Just as the FFT is performed iteratively on subproblems, so is the QFT: Equation xxxxxxxxxxxxxxx can be broken down into the following expression which allows for easier understanding of how the equation can be implemented as gates on a quantum circuit.
+
+\begin{equation}
+\left|j_{1} \cdots j_{n}\right\rangle \rightarrow \frac{\left(|0\rangle+ e^{2 \pi i 0 . j_{n}}|1\rangle\right)\left(|0\rangle+ e^{2 \pi i 0 . j_{n-1} j_{n}}|1\rangle\right) \cdots\left(|0\rangle+ e^{2 \pi i 0 . j_{1} j_{2} \cdots j_{n}}|1\rangle\right)}{2^{n / 2}}
+\end{equation}
+
+The first Hadamard in the following circuit representation of Equation xxxxxxxxxx puts the system into the superposition state required (the $1/\sqrt{2}$) and the following multiplications are implemented using the R controlled phase gates. The pattern apparent in the circuit indicates the recursive nature of the algorithm. The swap gate can be applied either at the beginning or end of the system as it is just required that the states of the two qubits are swapped prior to measurement and its position has no effect on the outcome.
+
+\begin{figure}[!htb]
+\includegraphics[scale=0.35]{../images/qft_circuit}
+  \centering
+  \caption{QFT circuit implemented on an n qubit system \cite{jurgen}.}
+\end{figure}
+
+As our implementation of the Klein Gordon equation only uses two qubits, the quantum Fourier transform on two qubits is represented by the following circuit.
+
+
+Like the classical Fourier transform, the quantum Fourier transform is reversible as well as unitary.
+
+\section{Exploration}
+The QFT in the circuit by Manik, K (2018) \cite{manik} is different to the aforementioned 
+
+We expect to see 
 
 \section{Results}
 \subsection{Kapil, M. et al. (2018) Results}

@@ -1,4 +1,14 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
+
+\bibitem{klein}
+O.~{Klein}, ``{Die Reflexion von Elektronen an einem Potentialsprung nach der
+  relativistischen Dynamik von Dirac},'' {\em Zeitschrift fur Physik}, vol.~53,
+  pp.~157--165, Mar. 1929.
+
+\bibitem{manik}
+M.~{Kapil}, B.~K. {Behera}, and P.~K. {Panigrahi}, ``{Quantum Simulation of
+  Klein Gordon Equation and Observation of Klein Paradox in IBM Quantum
+  Computer},'' {\em arXiv e-prints}, p.~arXiv:1807.00521, Jul 2018.
 
 \bibitem{minutephysics}
 H.~Reich, ``How quantum computers break encryption | shor's algorithm
@@ -17,5 +27,30 @@ IBM, ``Introducing qubit phase.''
 IBM, ``Advanced single-qubit gates.''
   {\url{https://quantumexperience.ng.bluemix.net/proxy/tutorial/full-user-guide/002-The_Weird_and_Wonderful_World_of_the_Qubit/004-advanced_qubit_gates.html}},
   nd.
+
+\bibitem{fourier}
+P.~Bevelacqua, ``Fourier transforms, fourier transform, tutorial, fourier
+  series, fourier.''
+  {\url{http://www.thefouriertransform.com/applications/fourier.php}}, 2010.
+
+\bibitem{turkey}
+J.~Cooley and J.~Tukey, ``An algorithm for the machine calculation of complex
+  fourier series,'' {\em Mathematics of Computation}, vol.~19, no.~90,
+  pp.~297--301, 1965.
+
+\bibitem{jvdp}
+J.~VanderPlas, ``Understanding the fft algorithm.''
+  {\url{https://jakevdp.github.io/blog/2013/08/28/understanding-the-fft/}},
+  2013.
+
+\bibitem{jonathan}
+J.~Hui, ``Qc — quantum fourier transform.''
+  {\url{https://medium.com/@jonathan_hui/qc-quantum-fourier-transform-45436f90a43}},
+  2018.
+
+\bibitem{jurgen}
+J.~V. Gael, ``The role of interference andentanglement in quantum computing.''
+  {\url{http://pages.cs.wisc.edu/~dieter/Papers/vangael-thesis.pdf}}, "May"
+  2005.
 
 \end{thebibliography}
