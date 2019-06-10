@@ -130,8 +130,9 @@ Here I will briefly explain the gates that will be used to create the circuit th
 	\[U_1(\lambda) = \left(\begin{array}{ll}{1} & {0} \\ {0} & {e^{i \lambda}}\end{array}\right)\]
 	\item\adjustbox{valign=t}{\includegraphics[width=0.7cm]{../images/u3_gate}}  {} {} {} {} $U_3$: used to perform arbitrary unitary operation, where the $\theta$, $\psi$ and $\lambda$ position of the vector on the Bloch sphere can be modified to any value. This is the most general form of a single qubit unitary operation and is represented in matrix form as \cite{qiskitu}:
 	\[U=\left(\begin{array}{cc}{\cos (\theta / 2)} & {-e^{i \lambda} \sin (\theta / 2)} \\ {e^{i \phi} \sin (\theta / 2)} & {e^{i \lambda+i \phi} \cos (\theta / 2)}\end{array}\right)\]
-	\item R
+	\item\adjustbox{valign=t}{\includegraphics[width=0.7cm]{../images/cu1_gate}} {} {} {} {}  $CU_1$: performs a phase rotation if both qubits are in the $|11\rangle$ state and is represented by the following matrix \cite{qiskit}:
 	\[R = \left(\begin{array}{cc}{1} & {0} \\ {0} & {e^{2 \pi i / 2^{k}}}\end{array}\right)\]
+	\item\adjustbox{valign=t}{\includegraphics[width=0.7cm]{../images/cnot_gate}}  {} {} {} {}  CNOT: operates on two qubits and flips the second qubit only if the first is in the $|1\rangle$ state. This gate is often used to entagnle qubits into the Bell state.
 	\item\adjustbox{valign=t}{\includegraphics[width=0.7cm]{../images/swap}} {} {} {} {}  SWAP: operates on a pair of qubits and swaps their state.
     \item\adjustbox{valign=t}{\includegraphics[width=0.7cm]{../images/measurement_gate}} {} {} {} {} Measurement: used at the end of the circuit to measure the outcome of the states in the z basis.
     \item\adjustbox{valign=t}{\includegraphics[width=0.7cm]{../images/barrier}} {} {} {} {} Barrier: directives which inform the complier not to optimise across barriers. They serve the purpose of keeping gates, especially measurement gates, in their place and are as well used as a visualisation tool to separate parts of the circuit.
@@ -139,24 +140,23 @@ Here I will briefly explain the gates that will be used to create the circuit th
 
 
 \section{The Circuits}
-Equations xxxxxx and xxxxxxx can be broken up and implemented into a circuit. As we are attempting to recreate results from Manik, K. (2018) \cite{manik}, we will take $V_1 = 12$ and $V_2 = 10$. No justification is given as to why these potentials are used. The circuits described in Figures xxxxx and xxxxxxxxx have their components separated by barriers and we will refer to each section in the order they appear starting at section 1 where the U1 gate appears. 
+Equations 3 and 4 can be broken up and implemented into a circuit. As we are attempting to recreate results from Manik, K. (2018) \cite{manik}, we will take $V_1 = 12$ and $V_2 = 10$. No justification is given as to why these potentials are used. The circuits described in Figures 2 and 3 have their components separated by barriers and we will refer to each section in the order they appear starting at section 1 where the U1 gate appears. 
 
-The first and last U1 gates (section 1 and 8) implement the potential term in the Klein Gordon equation. Then as per Equations xxxxx and xxxxxxxxx, inverse QFTs appear at sections 2 and 5 of the circuit and regular QTFs appear at sections 4 and 7 (explanation of these circuit implementations of the QFT can be seen shortly).
-
-In the code there is an option to choose to run the circuit on a real IBM quantum computer or the simulator.
+The first and last U1 gates (section 1 and 8) implement the potential term in the Klein Gordon equation. Then as per Equations 3 and 4, inverse QFTs appear at sections 2 and 5 of the circuit and regular QTFs appear at sections 4 and 7 (explanation of these circuit implementations of the QFT can be seen shortly).
 
 \begin{figure}[!htb]
 \includegraphics[scale=0.42]{../images/circuit1_colour}
   \centering
-  \caption{Circuit 1 }
+  \caption{Circuit 1 \cite{ibmq}}
 \end{figure}
 
 \begin{figure}[!htb]
 \includegraphics[scale=0.34]{../images/circuit2_colour}
   \centering
-  \caption{Circuit 2}
+  \caption{Circuit 2 \cite{ibmq}. The code for this circuit can be found in the Jupyter notebook \cite{ipynb} however we will no longer talk about this circuit as the author of the reference paper has not made their intention clear on its purpose and value.}
 \end{figure}
 
+\newpage
 \subsection{Fast Fourier Transform}
 The Fourier transform is able to decompose a function into its constituent functions, which has many practical applications including signal processing, analysis of differential equations and spectroscopy \cite{fourier}. One particular variation of Fourier transform of interest is the discrete Fourier transform (DFT) as it is computed using the fast Fourier transform (FFT) algorithm. The DFT computes a finite sequence of points of a function to its various frequency components, which although useful, is computationally expensive. The Cooley-Tucky \cite{turkey} FFT algorithm accelerates this process by splitting up the DFT problem into smaller parts and recognising a symmetry that exists between each even term and each odd term:
 
@@ -184,27 +184,46 @@ As in with standard DFT, a delta function will be transformed to a sine function
   \caption{Delta function transformed to a sine function of two qubits: $|10\rangle \rightarrow |00\rangle-|01\rangle+|10\rangle-|11\rangle$ \cite{jonathan}}
 \end{figure}
 
-Just as the FFT is performed iteratively on subproblems, so is the QFT: Equation xxxxxxxxxxxxxxx can be broken down into the following expression which allows for easier understanding of how the equation can be implemented as gates on a quantum circuit.
+Just as the FFT is performed iteratively on subproblems, so is the QFT: Equation 6 can be broken down into the following expression which allows for easier understanding of how the equation can be implemented as gates on a quantum circuit.
 
 \begin{equation}
 \left|j_{1} \cdots j_{n}\right\rangle \rightarrow \frac{\left(|0\rangle+ e^{2 \pi i 0 . j_{n}}|1\rangle\right)\left(|0\rangle+ e^{2 \pi i 0 . j_{n-1} j_{n}}|1\rangle\right) \cdots\left(|0\rangle+ e^{2 \pi i 0 . j_{1} j_{2} \cdots j_{n}}|1\rangle\right)}{2^{n / 2}}
 \end{equation}
 
-The first Hadamard in the following circuit representation of Equation xxxxxxxxxx puts the system into the superposition state required (the $1/\sqrt{2}$) and the following multiplications are implemented using the R controlled phase gates. The pattern apparent in the circuit indicates the recursive nature of the algorithm. The swap gate can be applied either at the beginning or end of the system as it is just required that the states of the two qubits are swapped prior to measurement and its position has no effect on the outcome.
+The first Hadamard in the following circuit representation of Equation 6 puts the system into the superposition state required (the $1/\sqrt{2}$) and the following multiplications are implemented using the R controlled phase gates. The pattern apparent in the circuit indicates the recursive nature of the algorithm. The swap gate can be applied either at the beginning or end of the system as it is just required that the states of the two qubits are swapped prior to measurement and its position has no effect on the outcome.
 
+\newpage
 \begin{figure}[!htb]
 \includegraphics[scale=0.35]{../images/qft_circuit}
   \centering
   \caption{QFT circuit implemented on an n qubit system \cite{jurgen}.}
 \end{figure}
 
-As our implementation of the Klein Gordon equation only uses two qubits, the quantum Fourier transform on two qubits is represented by the following circuit.
+As our implementation of the Klein Gordon equation only uses two qubits, the quantum Fourier transform on two qubits is represented by the following circuit. The QISKit implementation of the controlled phase gate R is the $CU_1$ gate. $CU_1$ takes the lambda value of $\frac{2\pi}{2^t}$.
 
+\begin{figure}[!htb]
+\includegraphics[scale=0.5]{../images/qft_two}
+  \centering
+  \caption{QFT circuit implemented on a two qubit system.}
+\end{figure}
 
-Like the classical Fourier transform, the quantum Fourier transform is reversible as well as unitary.
+\noindent Like the classical Fourier transform, the quantum Fourier transform is reversible as well as unitary. The inverse QFT is shown in Figure 7 below. $CU_1$ takes the lambda value of $-\frac{2\pi}{2^t}$.
+
+\begin{figure}[!htb]
+\includegraphics[scale=0.5]{../images/iqft}
+  \centering
+  \caption{IQFT circuit implemented on a two qubit system.}
+\end{figure}
+
+\subsection{Eigenvalues and Eigenfunctions}
+To implement the intermediate steps between the QFT and IQFT in Equations 3 and 4, the momentum eigenvalues are needed, which are \cite{manik}:
+
+\[p_{j}=\left\{\begin{array}{ll}{\frac{2 \pi}{2^{n}} j} & {0 \leqslant j \leqslant 2^{n-1}} \\ {\frac{2 \pi}{2^{n}}\left(2^{n-1}-j\right)} & {2^{n-1}<j<2^{n}}\end{array}\right.\]
+
+For varying j (depending on qubit), the author of the reference paper has used CNOT and $U_1$ gates to represent these eigenvalues and eigenfunctions seen in sections 3 and 6 of Figure 2.
 
 \section{Exploration}
-The time step interval (t) in Equation xxxxxx and xxxxxxxx was not provided in the original paper. I reached out to the author who was unable to provide the original values for these time steps however noted that the time started at t=0 and increased at a very small rate linearly. After trial and error of various time steps, the time step that yielded the most similar heatmap was t=0.02. Despite the long time spent trying to work out the time step, the resulting heatmaps were significantly different to those gained in the reference paper (see Figure xxxxxxxx).
+The time step interval (t) in Equation 3 and 4 was not provided in the original paper. I reached out to the author who was unable to provide the original values for these time steps however noted that the time started at t=0 and increased at a very small rate linearly. After trial and error of various time steps, the time step that yielded the most similar heatmap was t=0.02. Despite the long time spent trying to work out the time step, the resulting heatmaps were significantly different to those gained in the reference paper (see Figure 8).
 
 \begin{figure}[!htb]
 \includegraphics[scale=0.35]{../images/org_circ1}
@@ -234,16 +253,42 @@ The original paper used the IBM Q simulator exclusively, speculatively due to th
 \label{fig:test}
 \end{figure}
 
-As seen from Figure xxxxxxxxxxx, there is significant difference between the results from the simulated and real devices. Although some difference is to be expected due to an increase of error and uncertainty in real qubits, such a large discrepancy was unforseen. 
+As seen from Figure 9, there is significant difference between the results from the simulated and real devices. Although some difference is to be expected due to an increase of error and uncertainty in real qubits, such a large discrepancy was unforseen. 
 
-The QFT and IQFT implementations in the circuit by Manik, K (2018) \cite{manik} is different that mentioned in Section  
+The QFT and IQFT implementations in the circuit by Manik, K (2018) \cite{manik} is different that mentioned in Section 3.2. In further attempt to acquire desired results, I changed the reference paper's implementation of QFT and IQFT with the circuits displayed in Figure 10. Unfortunately on both the simulator and real device, this change did not make a positive change to the results of the circuit, as can be seen in Figure 10.
+
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=0.9\linewidth]{../images/circ1_heatmap_sim_qftnew}
+  \caption{Circuit 1 run in the simulated IBMQ environment}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=0.9\linewidth]{../images/circ1_heatmap_real_qftnew}
+  \caption{Circuit 1 run on the real IBMQx2 device}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{Circuit 1 run on different devices for the new implementation of the Quantum Fourier Transform.}
+\label{fig:test}
+\end{figure}
+
+The results from the running the circuit on the real device is similar to that using the original Fourier transform albeit with extra noise suggesting that the new QFT includes more superposition and uncertainty. The results from the simulator is extremely different and show no pattern in states at all.
+
+The implementation of eigenvalues and eigenfunctions mentioned in Section 3.3 marks itself as an issue to me due to the discrepancy between the equations and the circuit output. 
 
 \section{Results}
 The expected results of the implementation of the Klein Gordon equation is that for a pair of qubits at t=0, both qubits start in a $|00\rangle$ state and cross the barrier potential as expected by the Klein paradox. In the reference paper results this phenomenon is clearly observed as the particle and anti-particle tunnel at the high and low potentials, leading to the final state of the particle being $|10\rangle$. The author of the reference paper claims that the Klein paradox and tunneling effects are due to the chosen strong potential values and setting $mc^2=1$. 
 
-In this report, I was unable to reproduce the exact results gathered in the Manik, K. (2018) \cite{manik} paper. Using the IBMQ simulator, the qubit state started at $|00\rangle$ and ended spread out across the range of possible states however with slightly stronger appearance in the $|11\rangle$ state. 
+In this report, I was unable to reproduce the exact results gathered in the Manik, K. (2018) \cite{manik} paper. Using the IBMQ simulator for circuit 1, the qubit state started at $|00\rangle$ and ended spread out across the range of possible states however with slightly stronger appearance in the $|11\rangle$ state. 
 
-maybe you can't get tunneling with ideal simulator
+I believe that due to the stark difference in results gained from using the simulator and real device there must be a large amount of noise and decoherence on teh real qubits that greatly effect the computation. This here also connects back to a point made earlier in Section 2: the noise and inaccuracies of qubits is still large and shows that we are still in the early stages of being able to use quantum computers for practical purposes.
+
+Due to the reversible nature of the Fourier transform, it is expected that applying the QFT followed by the IQFT will return the system to its original states. When the QFT and IQFT outlined in the reference paper \cite{manik} was applied to a system with one qubit in the $|0\rangle$ state and one in the $|1\rangle$ state, the system did not return to its original state but rather had an approximate output of 50\% $|00\rangle$ and 50\% $|10\rangle$. This indicates that there is an error in this implementation of the QFT and IQFT in the original paper and the implementation outlined in Section 3.2 is correct (it passes the test of returning to the original state after applying the QFT then IQFT). Unfortunately when implemented the results were no closer to what we expected. 
+
+These results lead me to believe that there is a fundamental issue in the section of the circuit representing the eigenvalues and eigenfunctions of the Klein Gordon equation. This is a topic for further exploration as I do not have time to investigate this further at present.
 
 \bibliography{refs.bib}
 \bibliographystyle{ieeetr}

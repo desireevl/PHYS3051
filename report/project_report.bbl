@@ -40,6 +40,14 @@ IBM, ``Advanced single-qubit gates.''
   {\url{https://quantumexperience.ng.bluemix.net/proxy/tutorial/full-user-guide/002-The_Weird_and_Wonderful_World_of_the_Qubit/004-advanced_qubit_gates.html}},
   nd.
 
+\bibitem{qiskit}
+IBM, ``Ibm q experience circuit composer.''
+  \url{https://quantumexperience.ng.bluemix.net/}.
+
+\bibitem{ipynb}
+D.~Vogt-Lee, ``Klein gordon circuits.''
+  \url{https://github.com/desireevl/PHYS3051/blob/master/circuits.ipynb}.
+
 \bibitem{fourier}
 P.~Bevelacqua, ``Fourier transforms, fourier transform, tutorial, fourier
   series, fourier.''
