@@ -1,5 +1,9 @@
 \begin{thebibliography}{10}
 
+\bibitem{uqnotes}
+I.~McCulloch, ``Applications of lagrangian field theory.''
+  \url{https://learn.uq.edu.au/bbcswebdav/pid-4474235-dt-content-rid-18539051_1/xid-18539051_1}.
+
 \bibitem{klein}
 O.~{Klein}, ``{Die Reflexion von Elektronen an einem Potentialsprung nach der
   relativistischen Dynamik von Dirac},'' {\em Zeitschrift fur Physik}, vol.~53,
@@ -9,6 +13,14 @@ O.~{Klein}, ``{Die Reflexion von Elektronen an einem Potentialsprung nach der
 M.~{Kapil}, B.~K. {Behera}, and P.~K. {Panigrahi}, ``{Quantum Simulation of
   Klein Gordon Equation and Observation of Klein Paradox in IBM Quantum
   Computer},'' {\em arXiv e-prints}, p.~arXiv:1807.00521, Jul 2018.
+
+\bibitem{trotter}
+H.~F. Trotter, ``On the product of semi-groups of operators,'' {\em Proceedings
+  of the American Mathematical Society}, vol.~10, no.~4, pp.~545--551, 1959.
+
+\bibitem{ibm}
+D.~{Coppersmith}, ``{An approximate Fourier transform useful in quantum
+  factoring},'' {\em arXiv e-prints}, pp.~quant--ph/0201067, Jan 2002.
 
 \bibitem{minutephysics}
 H.~Reich, ``How quantum computers break encryption | shor's algorithm

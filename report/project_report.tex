@@ -5,9 +5,12 @@
 \renewcommand{\baselinestretch}{1.4}
 
 \usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{url}
 \usepackage{enumitem}
 \usepackage{adjustbox}
+\usepackage{amssymb}
 
 \usepackage{hyperref}
 \hypersetup{
@@ -65,6 +68,37 @@ This report will be based off a paper titled \textit{Quantum Simulation of Klein
 
 The present report aims to replicate results, justify decisions made in the original publication and offer criticism and suggestions. 
 
+\subsection{Klein Gordon Equation in Unitary Form}
+To implement the KG equation on a quantum computer, it must be written in terms of unitary operators \cite{manik}. To do this we start with the equation for a Hamiltonian in terms of mass of a particle (m), momentum operator ($\hat{p}$), potential (V), speed of light (c), identity matrix (I) and Pauli matrices ($\sigma_{1,2,3}$):
+
+\begin{equation}
+\hat{H}=\frac{\sigma_{3}+i \sigma_{2}}{2 m} \hat{p}^{2}+\sigma_{3} m c^{2}+I \hat{V}
+\end{equation}
+
+\noindent By using the vector: 
+\[\varphi=\left[\begin{array}{l}{\phi} \\ {\chi}\end{array}\right]\]
+
+\noindent We can solve two simulataneous equations, resulting in:
+\[\hat{H}_{1} \phi=\frac{\hat{p}^2}{2m}(\phi+\chi)+(mc^2+\hat{V}) \phi\]
+\[\hat{H}_{2} \chi=-\frac{\hat{p}^2}{2m}(\phi+\chi)+(-mc^2+\hat{V}) \chi\]
+
+\noindent These equations then need to be represented as a time evolution equation which can be done by taking the second order Trotter-Suzuki (TS) decomposition \cite{trotter} of the Hamiltonian:
+\[|\psi(x, t+\delta)\rangle= e^{-i \hat{H}_{i} t}|\psi(x, t)\rangle\]
+
+The TS decomposition equation simplifies calcuations of matrix exponentials that are required to solve the time dependent Schrodinger equation by proposing a way to rewrite exponentials to unitary operators allowing for less intensive computation:
+
+\[e^{-i \hat{H}_{1} t}=e^{-i\left(\frac{\tilde{p}^{2}}{2 m}(\square+\square)+\hat{V}_{1}\right) t}\]
+\[e^{-i \hat{H}_{2} t}=e^{i\left(\frac{\tilde{p}^{2}}{2 m}(\square+\square)-\hat{V}_{2}\right) t}\]
+
+Where $\square$ is the component of the wavefunction. Each momentum operator can be expressed using the quantum Fourier transform and its inverse in momentum space, which is explained in the IBM Research Report (1994) \cite{ibm} to result in the final unitary operators that can be implemented on the quantum computer:
+\begin{equation}
+e^{-i \hat{H}_{1} t}=F^{-1} e^{-i \hat{p}_{p}^{2} \square} . F . F^{-1} \cdot e^{-i \hat{p}_{p}^{2} \square} F \cdot e^{-i V_{1} \sigma_{z} t}
+\end{equation}
+
+\begin{equation}
+e^{-i \hat{H}_{2} t}=F^{-1} e^{i \hat{p}_{p}^{2} \square} . F . F^{-1} \cdot e^{i \hat{p}_{p}^{2} \square} F \cdot e^{-i V_{2} \sigma_{z} t}
+\end{equation}
+
 \section{Quantum Computing}
 Quantum computing is the melding together of quantum mechanics and classical computation. The computer chips used in quantum computers use the same fundamental components as that of their classical counterparts, however are pieced together in a way which allow quantum-bits, or qubits, to be used instead of bits. 
 
@@ -105,22 +139,9 @@ Here I will briefly explain the gates that will be used to create the circuit th
 
 
 \section{The Circuits}
-\subsection{Klein Gordon Equation as Unitary Operators}
-To implement the KG equation on a quantum computer, it must be written in terms of unitary operators. To do this we start with the equation for a Hamiltonian in terms of mass of a particle (m), momentum operator ($\hat{p}$), potential (V), speed of light (c), identity matrix (I) and Pauli matrices ($\sigma_{1,2,3}$):
+Equations xxxxxx and xxxxxxx can be broken up and implemented into a circuit. As we are attempting to recreate results from Manik, K. (2018) \cite{manik}, we will take $V_1 = 12$ and $V_2 = 10$. No justification is given as to why these potentials are used. The circuits described in Figures xxxxx and xxxxxxxxx have their components separated by barriers and we will refer to each section in the order they appear starting at section 1 where the U1 gate appears. 
 
-\begin{equation}
-\hat{H}=\frac{\sigma_{3}+i \sigma_{2}}{2 m} \hat{p}^{2}+\sigma_{3} m c^{2}+I \hat{V}
-\end{equation}
-
-\noindent By using the vector: 
-\[\varphi=\left[\begin{array}{l}{\phi} \\ {\chi}\end{array}\right]\]
-
-\noindent We can solve two simulataneous equations, resulting in:
-\[\hat{H}_{1} \phi=\frac{\hat{p}^2}{2m}(\phi+\chi)+(mc^2+\hat{V}) \phi\]
-\[\hat{H}_{2} \chi=-\frac{\hat{p}^2}{2m}(\phi+\chi)+(-mc^2+\hat{V}) \chi\]
-
-\noindent These equations then need to be represented as a time evolution equation which can be done by taking the second order Trotter-Suzuki decomposition of the Hamiltonian:
-\[|\psi(x, t+\delta)\rangle= e^{-i \hat{H}_{i} t}|\psi(x, t)\rangle\]
+The first and last U1 gates (section 1 and 8) implement the potential term in the Klein Gordon equation. Then as per Equations xxxxx and xxxxxxxxx, inverse QFTs appear at sections 2 and 5 of the circuit and regular QTFs appear at sections 4 and 7 (explanation of these circuit implementations of the QFT can be seen shortly).
 
 In the code there is an option to choose to run the circuit on a real IBM quantum computer or the simulator.
 
@@ -183,15 +204,46 @@ As our implementation of the Klein Gordon equation only uses two qubits, the qua
 Like the classical Fourier transform, the quantum Fourier transform is reversible as well as unitary.
 
 \section{Exploration}
-The QFT in the circuit by Manik, K (2018) \cite{manik} is different to the aforementioned 
+The time step interval (t) in Equation xxxxxx and xxxxxxxx was not provided in the original paper. I reached out to the author who was unable to provide the original values for these time steps however noted that the time started at t=0 and increased at a very small rate linearly. After trial and error of various time steps, the time step that yielded the most similar heatmap was t=0.02. Despite the long time spent trying to work out the time step, the resulting heatmaps were significantly different to those gained in the reference paper (see Figure xxxxxxxx).
 
-We expect to see 
+\begin{figure}[!htb]
+\includegraphics[scale=0.35]{../images/org_circ1}
+  \centering
+  \caption{Circuit 1 heatmap results from original paper \cite{manik}.}
+\end{figure}
+
+As the timestep used by the author was most likely chosen to best show the evolution of the states over time, it is not significantly important to get it exactly correct. However even with smaller timesteps/greater evolution time (these can be easily modified in the code \cite{ipynb}), the pattern found in the original heatmap was unable to be replicated which might suggest an error in the implementation of the KG equation.
+
+The original paper used the IBM Q simulator exclusively, speculatively due to the ideal, consistent results and fast output as opposed to the real device. In the code I have written for these circuits \cite{ipynb}, there is a toggle to run the circuit on either the IBM Q simulator or the IBMQx2 two qubit quantum computer. Below are the results of running the exact circuit from the reference paper on both devices. 
+
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=0.9\linewidth]{../images/circ1_heatmap_sim}
+  \caption{Circuit 1 run in the simulated IBMQ environment}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=0.9\linewidth]{../images/circ1_heatmap_real}
+  \caption{Circuit 1 run on the real IBMQx2 device}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{Circuit 1 run on different devices.}
+\label{fig:test}
+\end{figure}
+
+As seen from Figure xxxxxxxxxxx, there is significant difference between the results from the simulated and real devices. Although some difference is to be expected due to an increase of error and uncertainty in real qubits, such a large discrepancy was unforseen. 
+
+The QFT and IQFT implementations in the circuit by Manik, K (2018) \cite{manik} is different that mentioned in Section  
 
 \section{Results}
-\subsection{Kapil, M. et al. (2018) Results}
+The expected results of the implementation of the Klein Gordon equation is that for a pair of qubits at t=0, both qubits start in a $|00\rangle$ state and cross the barrier potential as expected by the Klein paradox. In the reference paper results this phenomenon is clearly observed as the particle and anti-particle tunnel at the high and low potentials, leading to the final state of the particle being $|10\rangle$. The author of the reference paper claims that the Klein paradox and tunneling effects are due to the chosen strong potential values and setting $mc^2=1$. 
 
-\subsection{My Results}
+In this report, I was unable to reproduce the exact results gathered in the Manik, K. (2018) \cite{manik} paper. Using the IBMQ simulator, the qubit state started at $|00\rangle$ and ended spread out across the range of possible states however with slightly stronger appearance in the $|11\rangle$ state. 
 
+maybe you can't get tunneling with ideal simulator
 
 \bibliography{refs.bib}
 \bibliographystyle{ieeetr}
